@@ -13,6 +13,7 @@ namespace WiproExercise
         public MainPage()
         {
             InitializeComponent();
+            var s = this.listview.CachingStrategy;
         }
     }
 }

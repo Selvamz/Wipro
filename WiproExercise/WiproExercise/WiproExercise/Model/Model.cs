@@ -10,16 +10,20 @@ namespace WiproExercise
 {
     public class Row
     {
-        public string title { get; set; }
-        public string description { get; set; }
-        public string imageHref { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImageHref { get; set; }
     }
 
     public class Data : INotifyPropertyChanged
     {
-
         private string title;
         private ObservableCollection<Row> rows;
+
+        public Data()
+        {
+            rows = new ObservableCollection<Row>();
+        }
 
         public string Title
         {

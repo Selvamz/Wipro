@@ -12,8 +12,12 @@ namespace WiproExercise
 {
     public class ViewModel : INotifyPropertyChanged
     {
+        private Data source;
+        private bool isLoading = true;
+
         public ViewModel()
         {
+            DataSource = new Data();
             GetData();
         }
 
@@ -25,21 +29,35 @@ namespace WiproExercise
                 var client = new System.Net.Http.HttpClient();
                 var response = await client.GetAsync("https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json");
                 string jsonObject = await response.Content.ReadAsStringAsync();
-                Source = new Data();
                 if (jsonObject != "")
                 {
-                    //Converting json object into the collection.
-                    Source = JsonConvert.DeserializeObject<Data>(jsonObject);
+                    //Converting json object using NewtonSoft.Json package.
+                    DataSource = JsonConvert.DeserializeObject<Data>(jsonObject);
                 }
             }
             else
                 await App.Current.MainPage.DisplayAlert("Message", "Internet connection required.", "Ok");
+            IsLoading = false;
         }
 
-        public Data Source
+        public Data DataSource
         {
-            get;
-            set;
+            get { return source; }
+            set
+            {
+                source = value;
+                OnPropertyChanged("DataSource");
+            }
+        }
+
+        public bool IsLoading
+        {
+            get { return isLoading; }
+            set
+            {
+                isLoading = value;
+                OnPropertyChanged("IsLoading");
+            }
         }
 
         /// <summary>
@@ -49,6 +67,7 @@ namespace WiproExercise
         {
             get
             {
+
                 return CrossConnectivity.Current.IsConnected;
             }
         }

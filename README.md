@@ -26,7 +26,8 @@ Displayed the activity indicator whenever the fetching data from URL (Initial lo
 ### UI testing
 Created the XamarinUI.Test project to automate some functionalities as described.
 
-Note: Developed application for both Android and iOS. But I have tested only in Android (MI-A1 device). And some images are not available in the provided URLs, so images will not be loaded for those items in application. Only title and description will be displayed. 
+**Note:** Developed application for both Android and iOS. But I have tested only in Android (MI-A1 device). And some images are not available in the provided URLs, so images will not be loaded for those items in application. Only title and description will be displayed. <br/>
+For other items, images also displayed.
 
 
 ## Open Source Libraries used:

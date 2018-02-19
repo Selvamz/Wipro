@@ -54,9 +54,9 @@
             </ListView>
             <Frame Grid.Row="2" BackgroundColor="AliceBlue" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Horizontal">
-                    <Button Text="Refresh" Command="{Binding RefreshCommand}"
+                    <Button x:Name="Refresh" Text="Refresh" Command="{Binding RefreshCommand}"
                             HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                    <Button Text="Sort" Command="{Binding SortCommand}"
+                    <Button x:Name="Sort" Text="Sort" Command="{Binding SortCommand}"
                             HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                 </StackLayout>
             </Frame>

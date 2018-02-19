@@ -32,7 +32,7 @@ namespace WiproExercise
             //If it has an internet connection, then fetch data from online. Else displays an alert message.
             //Below condition is used to identify whether the device has internet connection or not. This class is
             //available in Xam.Plugin.Connectivity nuget package.
-            if(CrossConnectivity.Current.IsConnected)
+            if (CrossConnectivity.Current.IsConnected)
             {
                 //Used HttpClient (from Microsoft.Net.Http nuget package) to download json data.
                 var client = new System.Net.Http.HttpClient();
@@ -43,16 +43,29 @@ namespace WiproExercise
                     //Converting json object using NewtonSoft.Json package.
                     DataSource = JsonConvert.DeserializeObject<Data>(jsonObject);
                     isAscending = null;
+                    IsLoading = false;
                 }
             }
             else
-                await App.Current.MainPage.DisplayAlert("Message", "Internet connection required.", "Ok");
-            IsLoading = false;
+            {
+                IsLoading = false;
+                Device.BeginInvokeOnMainThread(async() =>
+                {
+                    await Application.Current.MainPage.DisplayAlert("Message", "Internet connection required.", "Ok");
+                });
+            }
         }
 
+        /// <summary>
+        /// Command bound with the Refresh button in View.
+        /// </summary>
         public Command RefreshCommand { get; set; }
 
+        /// <summary>
+        /// Command bound with the Sort button in View.
+        /// </summary>
         public Command SortCommand { get; set; }
+
 
         public Data DataSource
         {

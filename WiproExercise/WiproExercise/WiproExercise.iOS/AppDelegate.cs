@@ -24,6 +24,9 @@ namespace WiproExercise.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             CachedImageRenderer.Init();
+#if ENABLE_TEST_CLOUD
+Xamarin.Calabash.Start();
+#endif
             LoadApplication(new App());
             return base.FinishedLaunching(app, options);
         }

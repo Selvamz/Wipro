@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:WiproExercise;assembly=WiproExercise"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="WiproExercise.MainPage">
 
     <ContentPage.BindingContext>
@@ -15,28 +16,35 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Label Text="{Binding DataSource.Title}" FontSize="24" BackgroundColor="AliceBlue"/>
-            <ListView x:Name="listview" Grid.Row="1" ItemsSource="{Binding DataSource.Rows}" HasUnevenRows="True">
+            <Frame BackgroundColor="AliceBlue" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Label Text="{Binding DataSource.Title}" FontSize="Large" FontAttributes="Bold" 
+                   HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+                   BackgroundColor="AliceBlue"/>
+            </Frame>
+            <ListView x:Name="listview" Grid.Row="1" ItemsSource="{Binding DataSource.Rows}" 
+                               HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
                                 <Grid RowSpacing="2" ColumnSpacing="2" Padding="0">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <Label Text="{Binding Title}" FontSize="Large" TextColor="DarkSlateBlue" Margin="0"/>
                                     <Grid Grid.Row="1" Padding="0" ColumnSpacing="2" RowSpacing="2" Margin="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <!--<ColumnDefinition Width="150"/>
-                                            <ColumnDefinition Width="20"/>-->
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="20"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding Description}" FontSize="Small" Margin="0"/>
-                                        <!--<Image Grid.Column="1" Source="{Binding ImageHref}" 
-                                               VerticalOptions="FillAndExpand"
-                                               HorizontalOptions="FillAndExpand"/>-->
+                                        <Label Text="{Binding Description}" FontSize="Small" Margin="2"/>
+                                        <ffimageloading:CachedImage Grid.Column="1"
+                                                                    CacheType="Memory"
+			                                                        DownsampleToViewSize="true"
+			                                                        Source = "{Binding ImageHref}">
+                                        </ffimageloading:CachedImage>
                                     </Grid>
                                 </Grid>
                             </ViewCell.View>
@@ -44,9 +52,21 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Frame Grid.Row="2" BackgroundColor="AliceBlue" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Refresh" Command="{Binding RefreshCommand}"
+                            HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                    <Button Text="Sort" Command="{Binding SortCommand}"
+                            HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                </StackLayout>
+            </Frame>
         </Grid>
-        <ActivityIndicator IsRunning="{Binding IsLoading}" 
+        <StackLayout Orientation="Vertical" IsVisible="{Binding IsLoading}" BackgroundColor="White"
+                     HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Label Text="{Binding RefreshingText}" FontSize="Large" Margin="3" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Margin="3"
                            HeightRequest="50" WidthRequest="50"
                            VerticalOptions="Center" HorizontalOptions="Center"/>
+        </StackLayout>
     </Grid>
 </ContentPage>

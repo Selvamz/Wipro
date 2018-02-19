@@ -10,6 +10,8 @@ namespace WiproExercise
 {
     public class Row
     {
+        string description;
+
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageHref { get; set; }
@@ -17,30 +19,30 @@ namespace WiproExercise
 
     public class Data : INotifyPropertyChanged
     {
-        private string title;
-        private ObservableCollection<Row> rows;
+        private string heading;
+        private ObservableCollection<Row> items;
 
         public Data()
         {
-            rows = new ObservableCollection<Row>();
+            items = new ObservableCollection<Row>();
         }
 
         public string Title
         {
-            get { return title; }
+            get { return heading; }
             set
             {
-                title = value;
+                heading = value;
                 OnPropertyChanged("Title");
             }
         }
 
         public ObservableCollection<Row> Rows
         {
-            get { return rows; }
+            get { return items; }
             set
             {
-                rows = value;
+                items = value;
                 OnPropertyChanged("Rows");
             }
         }

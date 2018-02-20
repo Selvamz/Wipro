@@ -10,8 +10,6 @@ namespace WiproExercise
 {
     public class Row
     {
-        string description;
-
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageHref { get; set; }

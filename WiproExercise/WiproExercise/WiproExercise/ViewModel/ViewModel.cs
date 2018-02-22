@@ -14,6 +14,8 @@ namespace WiproExercise
 {
     public class ViewModel : INotifyPropertyChanged
     {
+        private const string url = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json";
+
         private Data source;
         private bool isLoading = true;
         private string refreshingText = "Fetching Data";
@@ -34,26 +36,53 @@ namespace WiproExercise
             //available in Xam.Plugin.Connectivity nuget package.
             if (CrossConnectivity.Current.IsConnected)
             {
-                //Used HttpClient (from Microsoft.Net.Http nuget package) to download json data.
-                var client = new System.Net.Http.HttpClient();
-                var response = await client.GetAsync("https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json");
-                string jsonObject = await response.Content.ReadAsStringAsync();
-                if (jsonObject != "")
+                try
                 {
-                    //Converting json object using NewtonSoft.Json package.
-                    DataSource = JsonConvert.DeserializeObject<Data>(jsonObject);
-                    isAscending = null;
-                    IsLoading = false;
+                    //Used HttpClient (from Microsoft.Net.Http nuget package) to download json data.
+                    var client = new System.Net.Http.HttpClient();
+                    var response = await client.GetAsync(url);
+                    string jsonObject = await response.Content.ReadAsStringAsync();
+                    if (jsonObject != "")
+                    {
+                        //Converting json object using NewtonSoft.Json package.
+                        var source = JsonConvert.DeserializeObject<Data>(jsonObject);
+
+                        //Below code will ignore the null items from the collection
+                        var rows = source.Rows.Where(a => a != null && (a.Title != null || a.Description != null || a.ImageHref != null));
+                        source.Rows = new ObservableCollection<Row>(rows);
+                        if (IsInitialLoading)
+                            DataSource = source;
+                        else
+                        {
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                DataSource = source;
+                                await Application.Current.MainPage.DisplayAlert("Message", "Data refreshed.", "Ok");
+                            });
+                        }
+                        isAscending = null;
+                        IsInitialLoading = false;
+                    }
+                }
+                catch
+                {
+                    DisplayConnectionWarning();
                 }
             }
             else
+                DisplayConnectionWarning();
+        }
+
+        /// <summary>
+        /// Used to display the alert when no internet connection.
+        /// </summary>
+        private void DisplayConnectionWarning()
+        {
+            IsInitialLoading = false;
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                IsLoading = false;
-                Device.BeginInvokeOnMainThread(async() =>
-                {
-                    await Application.Current.MainPage.DisplayAlert("Message", "Internet connection required.", "Ok");
-                });
-            }
+                await Application.Current.MainPage.DisplayAlert("Message", "Internet connection required.", "Ok");
+            });
         }
 
         /// <summary>
@@ -80,18 +109,18 @@ namespace WiproExercise
         /// <summary>
         /// Determines whether data is in loading or not. It is bound with ActivityIndicator.
         /// </summary>
-        public bool IsLoading
+        public bool IsInitialLoading
         {
             get { return isLoading; }
             set
             {
                 isLoading = value;
-                OnPropertyChanged("IsLoading");
+                OnPropertyChanged("IsInitialLoading");
             }
         }
 
         /// <summary>
-        /// 
+        /// Used to represent the state in UI while data fetching.
         /// </summary>
         public string RefreshingText
         {
@@ -105,10 +134,8 @@ namespace WiproExercise
 
         private void Refresh()
         {
-            //Refreshes the data by downloading again from the provided url when Refresh button is clicked.
-            RefreshingText = "Refreshing Data";
-            IsLoading = true;
-            GetData();
+            //Refreshes the data in background thread by downloading again from the provided url when Refresh button is clicked.
+            Task.Run(()=> GetData());
         }
 
         private void Sort()

@@ -2,5 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="19" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="WiproExercise.Droid"></application>
 </manifest>
